@@ -6,13 +6,56 @@
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-  <h1>Sudoku Game</h1>
+  <header class="page-header">
+    <h1>Sudoku Game</h1>
+    <button id="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark mode">Dark mode</button>
+  </header>
+  <div class="difficulty-selector">
+    <span id="difficulty-label">Difficulty:</span>
+    <div id="difficulty-group" role="group" aria-labelledby="difficulty-label">
+      <button class="difficulty-btn" data-difficulty="easy" aria-pressed="false">Easy</button>
+      <button class="difficulty-btn active" data-difficulty="medium" aria-pressed="true">Medium</button>
+      <button class="difficulty-btn" data-difficulty="hard" aria-pressed="false">Hard</button>
+    </div>
+  </div>
   <div id="sudoku-board"></div>
   <div class="controls">
+    <div class="timer-display">
+      <span id="timer-label">Time</span>
+      <time id="timer" aria-labelledby="timer-label" datetime="PT0M0S">00:00</time>
+    </div>
     <button id="new-game">New Game</button>
+    <button id="hint">Hint</button>
     <button id="check-solution">Check Solution</button>
-    <span id="message"></span>
+    <span id="hint-count">Hints: 0</span>
+    <span id="message" role="status" aria-live="polite"></span>
+    <form id="score-form" class="score-form" hidden>
+      <label for="player-name">Enter your name for the scoreboard:</label>
+      <div class="score-form-controls">
+        <input id="player-name" name="playerName" type="text" maxlength="30" autocomplete="name" required>
+        <button type="submit">Save Score</button>
+      </div>
+      <span id="score-form-message" class="score-form-message" role="status" aria-live="polite"></span>
+    </form>
   </div>
+  <section class="scoreboard" aria-labelledby="scoreboard-heading">
+    <h2 id="scoreboard-heading">Top 10 Fastest Times</h2>
+    <div class="scoreboard-table-wrapper">
+      <table id="scoreboard-table">
+        <caption class="visually-hidden">Top 10 fastest Sudoku completion times</caption>
+        <thead>
+          <tr>
+            <th scope="col">Rank</th>
+            <th scope="col">Player</th>
+            <th scope="col">Time</th>
+            <th scope="col">Difficulty</th>
+            <th scope="col">Hints</th>
+          </tr>
+        </thead>
+        <tbody id="scoreboard-body"></tbody>
+      </table>
+    </div>
+  </section>
   <script src="/static/main.js"></script>
 </body>
 </html>
