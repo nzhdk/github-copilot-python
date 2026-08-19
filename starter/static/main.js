@@ -237,39 +237,39 @@ function resetTimer() {
 
 function getConflicts(row, col, value) {
   /**
-   * Returns array of [row, col] for all editable cells with the same value
+   * Returns array of [row, col] for all cells with the same value
    * in the same row, column, or 3x3 box.
-   * Empty cells and prefilled cells are never returned.
+   * Empty cells are never returned.
    */
   const conflicts = [];
-  
+
   if (!value) return conflicts; // Empty cells have no conflicts
-  
+
   const boardDiv = document.getElementById('sudoku-board');
   const inputs = boardDiv.getElementsByTagName('input');
-  
+
   // Check row
   for (let j = 0; j < SIZE; j++) {
     if (j !== col) {
       const idx = row * SIZE + j;
       const inp = inputs[idx];
-      if (inp.value === value && !inp.disabled) {
+      if (inp.value === value) {
         conflicts.push([row, j]);
       }
     }
   }
-  
+
   // Check column
   for (let i = 0; i < SIZE; i++) {
     if (i !== row) {
       const idx = i * SIZE + col;
       const inp = inputs[idx];
-      if (inp.value === value && !inp.disabled) {
+      if (inp.value === value) {
         conflicts.push([i, col]);
       }
     }
   }
-  
+
   // Check 3x3 box
   const boxRow = row - row % 3;
   const boxCol = col - col % 3;
@@ -278,7 +278,7 @@ function getConflicts(row, col, value) {
       if ((i !== row || j !== col) && i >= 0 && i < SIZE && j >= 0 && j < SIZE) {
         const idx = i * SIZE + j;
         const inp = inputs[idx];
-        if (inp.value === value && !inp.disabled) {
+        if (inp.value === value) {
           conflicts.push([i, j]);
         }
       }
@@ -290,32 +290,27 @@ function getConflicts(row, col, value) {
 
 function updateConflictMarkings() {
   /**
-   * Scans all editable cells and marks those involved in conflicts.
+   * Scans all cells and marks those involved in conflicts.
    * A conflict is a duplicate value in the same row, column, or 3x3 box.
-   * Prefilled cells are never marked as conflicts.
-   * All conflicting editable cells get the 'conflict' class.
+   * Locked cells participate and can be marked, but remain disabled.
    */
   const boardDiv = document.getElementById('sudoku-board');
   const inputs = boardDiv.getElementsByTagName('input');
-  
+
   // First pass: clear all conflict markings
   for (let idx = 0; idx < inputs.length; idx++) {
-    const inp = inputs[idx];
-    if (!inp.disabled) {
-      inp.classList.remove('conflict');
-    }
+    inputs[idx].classList.remove('conflict');
   }
-  
+
   // Second pass: mark all conflicts
   for (let i = 0; i < SIZE; i++) {
     for (let j = 0; j < SIZE; j++) {
       const idx = i * SIZE + j;
       const inp = inputs[idx];
-      if (inp.disabled) continue; // Skip prefilled cells
-      
+
       const value = inp.value;
       if (!value) continue; // Skip empty cells
-      
+
       const conflicts = getConflicts(i, j, value);
       if (conflicts.length > 0) {
         // Mark the current cell
